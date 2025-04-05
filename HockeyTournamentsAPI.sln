@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeyTournamentsAPI", "HockeyTournamentsAPI\HockeyTournamentsAPI.csproj", "{F84FA467-0B9C-41CF-8AFA-CC3F6BDCB19C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeyTournamentsAPI.Core", "HockeyTournamentsAPI.Core\HockeyTournamentsAPI.Core.csproj", "{DD86C057-3098-4520-9B4A-668CA42FE648}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeyTournamentsAPI.Database.PostgreSQL", "HockeyTournamentAPI.Database.PostgreSQL\HockeyTournamentsAPI.Database.PostgreSQL.csproj", "{94D3EE90-91E7-4DCC-BEE1-B9088E2F88E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeyTournamentsAPI.Infrastructure", "HockeyTournamentsAPI.Infrastructure\HockeyTournamentsAPI.Infrastructure.csproj", "{2000FF2E-7BDD-484E-9AEB-953D0F574189}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HockeyTournamentsAPI.Application", "HockeyTournamentsAPI.Application\HockeyTournamentsAPI.Application.csproj", "{DCB3B65F-1CBE-41C1-AE74-80A275914713}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F84FA467-0B9C-41CF-8AFA-CC3F6BDCB19C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F84FA467-0B9C-41CF-8AFA-CC3F6BDCB19C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F84FA467-0B9C-41CF-8AFA-CC3F6BDCB19C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F84FA467-0B9C-41CF-8AFA-CC3F6BDCB19C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD86C057-3098-4520-9B4A-668CA42FE648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD86C057-3098-4520-9B4A-668CA42FE648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD86C057-3098-4520-9B4A-668CA42FE648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD86C057-3098-4520-9B4A-668CA42FE648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D3EE90-91E7-4DCC-BEE1-B9088E2F88E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D3EE90-91E7-4DCC-BEE1-B9088E2F88E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D3EE90-91E7-4DCC-BEE1-B9088E2F88E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D3EE90-91E7-4DCC-BEE1-B9088E2F88E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2000FF2E-7BDD-484E-9AEB-953D0F574189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2000FF2E-7BDD-484E-9AEB-953D0F574189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2000FF2E-7BDD-484E-9AEB-953D0F574189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2000FF2E-7BDD-484E-9AEB-953D0F574189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCB3B65F-1CBE-41C1-AE74-80A275914713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCB3B65F-1CBE-41C1-AE74-80A275914713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCB3B65F-1CBE-41C1-AE74-80A275914713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCB3B65F-1CBE-41C1-AE74-80A275914713}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HockeyTournamentAPI.Database.PostgreSQL\HockeyTournamentsAPI.Database.PostgreSQL.csproj" />
+    <ProjectReference Include="..\HockeyTournamentsAPI.Core\HockeyTournamentsAPI.Core.csproj" />
+    <ProjectReference Include="..\HockeyTournamentsAPI.Infrastructure\HockeyTournamentsAPI.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
