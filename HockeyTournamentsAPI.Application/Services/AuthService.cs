@@ -7,7 +7,7 @@ using HockeyTournamentsAPI.Infrastructure.Jwt.Interfaces;
 
 namespace HockeyTournamentsAPI.Application.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         /// <summary>
         /// Репозиторий пользователей.
@@ -33,13 +33,18 @@ namespace HockeyTournamentsAPI.Application.Services
             _jwtProvider = jwtProvider;
         }
 
-        public async Task<User> RegisterUser(AuthRequest request)
+        public async Task<bool> RegisterUser(RegisterRequest request)
         {
             var userRole = await _rolesService.GetRoleByNameAsync("Пользователь");
 
             if (userRole == null)
             {
-
+                userRole = await _rolesService.CreateRoleAsync(new Role()
+                {
+                    Name = "Пользователь",
+                    Description = "Роль обычного пользователя",
+                    Permissions = (RolePermissions)0
+                });
             }
 
             var user = new User()
@@ -53,13 +58,36 @@ namespace HockeyTournamentsAPI.Application.Services
                 Email = request.Email,
                 Phone = request.Phone,
                 SportLevel = request.SportLevel,
+                Role = userRole,
                 PasswordHash = Hash.SHA256Hash(request.Password),
             };
 
             try
             {
                 var entity = await _usersRepository.CreateAsync(user);
+                return true;
             }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<string> LoginUser(LoginRequest request)
+        {
+            var user = await _usersRepository.GetByEmailAsync(request.Email);
+
+            var requestPasswordHash = Hash.SHA256Hash(request.Password);
+
+            if (user != null &&
+                user.PasswordHash == requestPasswordHash)
+            {
+                var userPermissions = user.Role.Permissions;
+                var permissionsNames = ((RolePermissions)(userPermissions)).ToString().Split(", ");
+                var token = _jwtProvider.GenerateToken(request.Email, permissionsNames);
+                return token;
+            }
+            return string.Empty;
         }
     }
 }

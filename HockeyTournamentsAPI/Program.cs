@@ -4,7 +4,11 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddPostgreSQLDb(config.GetConnectionString("PostgreSQL")!);
+builder.Services
+    .AddPostgreSQLDb(config.GetConnectionString("PostgreSQL")!)
+    .AddDbRepositories();
+builder.Services.AddJwtAuthentication(config.GetSection("Jwt"));
+builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -18,6 +22,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.CheckDefaultRoles();
 
 app.UseHttpsRedirection();
 

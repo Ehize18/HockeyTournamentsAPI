@@ -31,16 +31,12 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Repositories
         /// <returns>Сущность.</returns>
         /// <exception cref="EntityNotFoundException"></exception>
         /// <exception cref="UnknownDbException"></exception>
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity?> GetByIdAsync(Guid id)
         {
             try
             {
                 var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id);
 
-                if (entity == null)
-                {
-                    throw new EntityNotFoundException(id.ToString());
-                }
                 return entity;
             }
             catch (Exception ex)
@@ -154,10 +150,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Repositories
                 _context.Set<TEntity>().Remove(entity);
                 await _context.SaveChangesAsync();
                 return true;
-            }
-            catch (EntityNotFoundException ex)
-            {
-                throw;
             }
             catch (UnknownDbException ex)
             {

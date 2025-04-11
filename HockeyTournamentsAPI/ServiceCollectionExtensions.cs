@@ -5,6 +5,10 @@ using HockeyTournamentsAPI.Infrastructure.Jwt.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using HockeyTournamentsAPI.Application.Interfaces;
+using HockeyTournamentsAPI.Application.Services;
+using HockeyTournamentsAPI.Database.PostgreSQL.Interfaces;
+using HockeyTournamentsAPI.Database.PostgreSQL.Repositories;
 
 namespace HockeyTournamentsAPI
 {
@@ -47,7 +51,31 @@ namespace HockeyTournamentsAPI
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = securityKey
                     };
+                    options.Events = new JwtBearerEvents()
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies["HockeyToken"];
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+
+            return services;
+        }
+
+        public static IServiceCollection AddDbRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IRolesRepository, RolesRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IRolesService, RolesService>();
 
             return services;
         }

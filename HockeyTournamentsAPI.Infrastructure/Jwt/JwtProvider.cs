@@ -16,9 +16,18 @@ namespace HockeyTournamentsAPI.Infrastructure.Jwt
             _jwtOptions = options.Value;
         }
 
-        public string GenerateToken(string email, string role)
+        public string GenerateToken(string email, IEnumerable<string> roles)
         {
-            Claim[] claims = [new("role", role), new("email", email)];
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Email, email),
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(
+                    new(ClaimTypes.Role, role));
+            }
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)), SecurityAlgorithms.HmacSha256);

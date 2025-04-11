@@ -6,19 +6,22 @@
     [Flags]
     public enum RolePermissions
     {
+        None = 0,
         /// <summary>
         /// Возможность добавлять роли.
         /// </summary>
-        AddRoles,
+        AddRoles = 1,
 
         /// <summary>
         /// Возможность создавать турниры.
         /// </summary>
-        CreateTournaments,
+        CreateTournaments = 2,
 
         /// <summary>
         /// Возможность судить матчи.
         /// </summary>
-        JudgingMatches
+        JudgingMatches = 4,
+
+       // All = -1
     }
 }

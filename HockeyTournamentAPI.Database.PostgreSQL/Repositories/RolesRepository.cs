@@ -10,22 +10,28 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Repositories
         public RolesRepository(HockeyTournamentsDbContext context)
             : base(context) { }
 
-        public async Task<Role> GetRoleByName(string name)
+        public async Task<Role?> GetRoleByName(string name)
         {
             try
             {
                 var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == name);
 
-                if (role == null)
-                {
-                    throw new EntityNotFoundException(name);
-                }
                 return role;
             }
             catch (Exception ex)
             {
                 throw new UnknownDbException(name, ex);
             }
+        }
+
+        public async Task<Role?> GetUserRole(Guid userId)
+        {
+            var role = await _context
+                .Roles
+                .FirstOrDefaultAsync(
+                    x => x.Users.FirstOrDefault(
+                        u => u.Id == userId) != null);
+            return role;
         }
     }
 }

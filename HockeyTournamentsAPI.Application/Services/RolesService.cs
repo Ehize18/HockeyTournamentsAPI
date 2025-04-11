@@ -22,10 +22,6 @@ namespace HockeyTournamentsAPI.Application.Services
 
                 return role;
             }
-            catch (EntityNotFoundException ex)
-            {
-                return null;
-            }
             catch (UnknownDbException ex)
             {
                 throw;
@@ -35,6 +31,7 @@ namespace HockeyTournamentsAPI.Application.Services
         public async Task<Role> CreateRoleAsync(Role role)
         {
             var roleEntity = await _rolesRepository.CreateAsync(role);
+            return roleEntity;
         }
     }
 }

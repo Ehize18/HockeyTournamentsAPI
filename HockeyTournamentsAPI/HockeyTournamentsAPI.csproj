@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HockeyTournamentAPI.Database.PostgreSQL\HockeyTournamentsAPI.Database.PostgreSQL.csproj" />
+    <ProjectReference Include="..\HockeyTournamentsAPI.Application\HockeyTournamentsAPI.Application.csproj" />
     <ProjectReference Include="..\HockeyTournamentsAPI.Core\HockeyTournamentsAPI.Core.csproj" />
     <ProjectReference Include="..\HockeyTournamentsAPI.Infrastructure\HockeyTournamentsAPI.Infrastructure.csproj" />
   </ItemGroup>
