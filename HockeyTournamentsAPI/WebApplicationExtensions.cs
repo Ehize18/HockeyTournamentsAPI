@@ -1,5 +1,7 @@
 ﻿using HockeyTournamentsAPI.Application.Interfaces;
 using HockeyTournamentsAPI.Core.Models;
+using HockeyTournamentsAPI.Database.PostgreSQL.Interfaces;
+using HockeyTournamentsAPI.Infrastructure.Hash;
 
 namespace HockeyTournamentsAPI
 {
@@ -9,27 +11,33 @@ namespace HockeyTournamentsAPI
         {
             using var scope = webApplication.Services.CreateScope();
 
-            var rolesService = scope.ServiceProvider.GetRequiredService<IRolesService>();
+            var userRepository = scope.ServiceProvider.GetRequiredService<IUsersRepository>();
 
-            var defaultRoles = webApplication.Configuration.GetSection("DefaultRoles").Get<List<Dictionary<string, string>>>();
+            var defaultUsers = webApplication.Configuration.GetSection("DefaultUsers").Get<List<Dictionary<string, string>>>();
 
-            var adminRole = await rolesService.GetRoleByNameAsync("Администратор");
-            if (adminRole == null)
+            foreach (var user in defaultUsers)
             {
-                await rolesService.CreateRoleAsync(new()
+                if (user["Name"] == "Supervisor")
                 {
-                    Name = "Администратор",
-                    Permissions = (RolePermissions)Enum.GetValues<RolePermissions>().Cast<int>().Sum()
-                });
-            }
-            var userRole = await rolesService.GetRoleByNameAsync("Пользователь");
-            if (userRole == null)
-            {
-                await rolesService.CreateRoleAsync(new()
-                {
-                    Name = "Пользователь",
-                    Permissions = 0
-                });
+                    var supervisor = await userRepository.GetSupervisorAsync();
+
+                    if (supervisor == null)
+                    {
+                        await userRepository.CreateAsync(new User()
+                        {
+                            Id = Guid.NewGuid(),
+                            FirstName = "Supervisor",
+                            LastName = "Supervisor",
+                            BirthDate = new DateOnly(2000, 1, 1),
+                            IsMale = true,
+                            Email = "changeme@supervisor.com",
+                            Phone = "11111111111",
+                            SportLevel = "",
+                            Role = Role.Supervisor,
+                            PasswordHash = Hash.SHA256Hash(user["Password"]),
+                        });
+                    }
+                }
             }
 
             return webApplication;

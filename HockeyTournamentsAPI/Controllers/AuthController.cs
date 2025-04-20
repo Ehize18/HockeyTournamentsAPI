@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using HockeyTournamentsAPI.Application.Contracts.Auth;
 using HockeyTournamentsAPI.Application.Interfaces;
-using HockeyTournamentsAPI.Authorization;
 using HockeyTournamentsAPI.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

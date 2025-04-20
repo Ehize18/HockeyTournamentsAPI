@@ -1,28 +1,23 @@
-﻿namespace HockeyTournamentsAPI.Core.Models
+﻿using System.ComponentModel;
+
+namespace HockeyTournamentsAPI.Core.Models
 {
-    /// <summary>
-    /// Роль пользователя.
-    /// </summary>
-    public class Role : BaseModel
+    [Flags]
+    public enum Role
     {
-        /// <summary>
-        /// Название.
-        /// </summary>
-        public string Name { get; set; }
+        [Description("Пользователь")]
+        User,
 
-        /// <summary>
-        /// Описание.
-        /// </summary>
-        public string Description { get; set; }
+        [Description("Супер пользователь")]
+        Supervisor,
 
-        /// <summary>
-        /// Матрица разрешений.
-        /// </summary>
-        public RolePermissions Permissions { get; set; }
+        [Description("Администратор")]
+        Administrator,
 
-        /// <summary>
-        /// Список пользователей с ролью.
-        /// </summary>
-        public IList<User> Users { get; set; }
+        [Description("Тренер")]
+        Trainer,
+
+        [Description("Судья")]
+        Judge
     }
 }

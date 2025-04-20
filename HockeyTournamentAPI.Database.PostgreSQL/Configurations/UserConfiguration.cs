@@ -46,10 +46,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
                 .WithMany(x => x.Students)
                 .HasForeignKey(x => x.TrainerId)
                 .IsRequired(false);
-
-            builder.HasOne(x => x.Role)
-                .WithMany(x => x.Users)
-                .HasForeignKey(x => x.RoleId);
         }
     }
 }

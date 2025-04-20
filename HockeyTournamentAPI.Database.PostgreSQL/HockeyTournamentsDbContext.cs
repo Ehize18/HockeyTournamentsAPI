@@ -16,17 +16,11 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL
         /// </summary>
         public DbSet<User> Users { get; set; }
 
-        /// <summary>
-        /// Роли.
-        /// </summary>
-        public DbSet<Role> Roles { get; set; }
-
         public DbSet<Tournament> Tournaments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new TournamentConfiguration());
             base.OnModelCreating(modelBuilder);
         }

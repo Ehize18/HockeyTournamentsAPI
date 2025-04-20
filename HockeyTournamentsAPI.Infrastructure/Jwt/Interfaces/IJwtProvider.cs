@@ -2,6 +2,6 @@
 {
     public interface IJwtProvider
     {
-        string GenerateToken(string email, IEnumerable<string> roles);
+        string GenerateToken(string email, string role);
     }
 }

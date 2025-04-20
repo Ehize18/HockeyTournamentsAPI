@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 {
     [DbContext(typeof(HockeyTournamentsDbContext))]
-    [Migration("20250321152540_InitialCreate")]
+    [Migration("20250420080123_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Role", b =>
+            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tournament", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,19 +37,22 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(30)");
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("timestamptz");
 
-                    b.Property<int>("Permissions")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.User", b =>
@@ -83,6 +86,10 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     b.Property<string>("MiddleName")
                         .HasColumnType("varchar(30)");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("varchar(11)");
@@ -90,8 +97,8 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("SportLevel")
                         .IsRequired()
@@ -108,8 +115,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
                     b.HasIndex("TrainerId");
 
                     b.ToTable("Users");
@@ -117,24 +122,11 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.User", b =>
                 {
-                    b.HasOne("HockeyTournamentsAPI.Core.Models.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HockeyTournamentsAPI.Core.Models.User", "Trainer")
                         .WithMany("Students")
                         .HasForeignKey("TrainerId");
 
-                    b.Navigation("Role");
-
                     b.Navigation("Trainer");
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.User", b =>

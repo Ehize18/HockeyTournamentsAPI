@@ -66,8 +66,8 @@ namespace HockeyTournamentsAPI
 
         public static IServiceCollection AddDbRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<ITournamentsRepository, TournamentsRepository>();
 
             return services;
         }
@@ -75,7 +75,8 @@ namespace HockeyTournamentsAPI
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IRolesService, RolesService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITournamentService, TournamentService>();
 
             return services;
         }

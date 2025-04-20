@@ -67,11 +67,6 @@
         public Role Role { get; set; }
 
         /// <summary>
-        /// Id роли пользователя.
-        /// </summary>
-        public Guid RoleId { get; set; }
-
-        /// <summary>
         /// Тренер игрока.
         /// </summary>
         public User? Trainer { get; set; }

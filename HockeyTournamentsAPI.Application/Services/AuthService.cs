@@ -14,8 +14,6 @@ namespace HockeyTournamentsAPI.Application.Services
         /// </summary>
         private readonly IUsersRepository _usersRepository;
 
-        private readonly IRolesService _rolesService;
-
         /// <summary>
         /// Провайдер JWT токенов.
         /// </summary>
@@ -26,27 +24,14 @@ namespace HockeyTournamentsAPI.Application.Services
         /// </summary>
         /// <param name="usersRepository">Репозиторий пользователей.</param>
         /// <param name="jwtProvider">Провайдер JWT токенов.</param>
-        public AuthService(IUsersRepository usersRepository, IRolesService rolesService, IJwtProvider jwtProvider)
+        public AuthService(IUsersRepository usersRepository, IJwtProvider jwtProvider)
         {
             _usersRepository = usersRepository;
-            _rolesService = rolesService;
             _jwtProvider = jwtProvider;
         }
 
         public async Task<bool> RegisterUser(RegisterRequest request)
         {
-            var userRole = await _rolesService.GetRoleByNameAsync("Пользователь");
-
-            if (userRole == null)
-            {
-                userRole = await _rolesService.CreateRoleAsync(new Role()
-                {
-                    Name = "Пользователь",
-                    Description = "Роль обычного пользователя",
-                    Permissions = (RolePermissions)0
-                });
-            }
-
             var user = new User()
             {
                 Id = Guid.NewGuid(),
@@ -58,7 +43,7 @@ namespace HockeyTournamentsAPI.Application.Services
                 Email = request.Email,
                 Phone = request.Phone,
                 SportLevel = request.SportLevel,
-                Role = userRole,
+                Role = Role.User,
                 PasswordHash = Hash.SHA256Hash(request.Password),
             };
 
@@ -82,9 +67,8 @@ namespace HockeyTournamentsAPI.Application.Services
             if (user != null &&
                 user.PasswordHash == requestPasswordHash)
             {
-                var userPermissions = user.Role.Permissions;
-                var permissionsNames = ((RolePermissions)(userPermissions)).ToString().Split(", ");
-                var token = _jwtProvider.GenerateToken(request.Email, permissionsNames);
+                var userRole = user.Role.ToString();
+                var token = _jwtProvider.GenerateToken(request.Email, userRole);
                 return token;
             }
             return string.Empty;

@@ -12,19 +12,20 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "Tournaments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "varchar(30)", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Permissions = table.Column<int>(type: "integer", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamptz", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.PrimaryKey("PK_Tournaments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,10 +40,11 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     Gender = table.Column<bool>(type: "boolean", nullable: false),
                     Email = table.Column<string>(type: "varchar(100)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(11)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
                     SportLevel = table.Column<string>(type: "text", nullable: false),
                     Rating = table.Column<int>(type: "integer", nullable: false),
                     TelegramId = table.Column<int>(type: "integer", nullable: true),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
                     TrainerId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false)
@@ -51,22 +53,11 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Users_Users_TrainerId",
                         column: x => x.TrainerId,
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
-                table: "Users",
-                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_TrainerId",
@@ -78,10 +69,10 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Tournaments");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Users");
         }
     }
 }
