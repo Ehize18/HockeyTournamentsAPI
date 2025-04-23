@@ -3,6 +3,7 @@ using System;
 using HockeyTournamentsAPI.Database.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 {
     [DbContext(typeof(HockeyTournamentsDbContext))]
-    partial class HockeyTournamentsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422182448_ParticipantKick")]
+    partial class ParticipantKick
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +55,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("Matches", (string)null);
+                    b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Team", b =>
@@ -77,7 +80,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("Teams", (string)null);
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.TeamMember", b =>
@@ -104,7 +107,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("TeamMembers", (string)null);
+                    b.ToTable("TeamMembers");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tour", b =>
@@ -135,7 +138,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Tours", (string)null);
+                    b.ToTable("Tours");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tournament", b =>
@@ -165,7 +168,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournaments", (string)null);
+                    b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.TournamentParticipant", b =>
@@ -206,7 +209,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("TournamentParticipants", (string)null);
+                    b.ToTable("TournamentParticipants");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.User", b =>
@@ -271,7 +274,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("TrainerId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Match", b =>

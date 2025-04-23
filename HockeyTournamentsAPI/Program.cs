@@ -23,7 +23,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await app.CheckDefaultRoles();
+await app.CheckDefaultUsers();
+
+app.MigrateDb();
 
 app.UseHttpsRedirection();
 

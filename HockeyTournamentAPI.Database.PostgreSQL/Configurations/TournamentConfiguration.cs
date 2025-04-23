@@ -22,6 +22,10 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
             builder.Property(t => t.EndTime)
                 .HasColumnType("timestamptz")
                 .IsRequired(false);
+
+            builder.HasMany(t => t.Participants)
+                .WithOne(p => p.Tournament)
+                .HasForeignKey(p => p.TournamentId);
         }
     }
 }

@@ -1,13 +1,15 @@
 ﻿using HockeyTournamentsAPI.Application.Interfaces;
 using HockeyTournamentsAPI.Core.Models;
+using HockeyTournamentsAPI.Database.PostgreSQL;
 using HockeyTournamentsAPI.Database.PostgreSQL.Interfaces;
 using HockeyTournamentsAPI.Infrastructure.Hash;
+using Microsoft.EntityFrameworkCore;
 
 namespace HockeyTournamentsAPI
 {
     public static class WebApplicationExtensions
     {
-        public static async Task<WebApplication> CheckDefaultRoles(this WebApplication webApplication)
+        public static async Task<WebApplication> CheckDefaultUsers(this WebApplication webApplication)
         {
             using var scope = webApplication.Services.CreateScope();
 
@@ -39,6 +41,16 @@ namespace HockeyTournamentsAPI
                     }
                 }
             }
+
+            return webApplication;
+        }
+
+        public static WebApplication MigrateDb(this WebApplication webApplication)
+        {
+            using var scope = webApplication.Services.CreateScope();
+
+            var context = scope.ServiceProvider.GetRequiredService<HockeyTournamentsDbContext>();
+            context.Database.Migrate();
 
             return webApplication;
         }

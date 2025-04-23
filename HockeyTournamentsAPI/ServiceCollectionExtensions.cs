@@ -68,6 +68,10 @@ namespace HockeyTournamentsAPI
         {
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ITournamentsRepository, TournamentsRepository>();
+            services.AddScoped<ITournamentParticipantsRepository, TournamentParticipantsRepository>();
+            services.AddScoped<IToursRepository, ToursRepository>();
+            services.AddScoped<IMatchesRepository, MatchesRepository>();
+            services.AddScoped<ITeamsRepository, TeamsRepository>();
 
             return services;
         }
@@ -77,6 +81,7 @@ namespace HockeyTournamentsAPI
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITournamentService, TournamentService>();
+            services.AddScoped<ITourService, TourService>();
 
             return services;
         }

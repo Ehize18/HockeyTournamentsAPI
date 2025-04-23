@@ -6,5 +6,8 @@
         public string? Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+
+        public List<TournamentParticipant> Participants { get; set; }
+        public List<Tour> Tours { get; set; }
     }
 }

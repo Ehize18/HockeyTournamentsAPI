@@ -1,4 +1,6 @@
-﻿using HockeyTournamentsAPI.Application.Contracts.Tournaments;
+﻿using System.Security.Claims;
+using HockeyTournamentsAPI.Application.Contracts.Participants;
+using HockeyTournamentsAPI.Application.Contracts.Tournaments;
 using HockeyTournamentsAPI.Application.Interfaces;
 using HockeyTournamentsAPI.Application.Map;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +14,12 @@ namespace HockeyTournamentsAPI.Controllers
     public class TournamentsController : ControllerBase
     {
         private readonly ITournamentService _tournamentService;
+        private readonly IUserService _userService;
 
-        public TournamentsController(ITournamentService tournamentService)
+        public TournamentsController(ITournamentService tournamentService, IUserService userService)
         {
             _tournamentService = tournamentService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -38,9 +42,11 @@ namespace HockeyTournamentsAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TournamentResponse>>> GetAllAsync()
         {
-            var tournamentsEntities = await _tournamentService.GetAllAsync();
+            var tournamentsEntities = await _tournamentService
+                .GetAllAsync();
 
-            var response = tournamentsEntities.ToResponse();
+            var response = tournamentsEntities
+                .ToResponse();
 
             return Ok(response);
         }
@@ -48,16 +54,24 @@ namespace HockeyTournamentsAPI.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<TournamentResponse>> GetById(Guid id)
         {
-            var tournament = await _tournamentService.GetById(id);
+            var tournament = await _tournamentService
+                .GetById(id);
 
             if (tournament == null)
             {
                 return NotFound();
             }
 
-            var response = tournament.ToResponse();
+            var response = tournament
+                .ToResponse();
 
             return Ok(response);
+        }
+
+        [HttpPost("Start/{id:guid}")]
+        public async Task<ActionResult> Start(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

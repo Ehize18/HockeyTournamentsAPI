@@ -79,6 +79,8 @@
         /// <summary>
         /// Ученики тренера.
         /// </summary>
-        public IList<User> Students { get; set; }
+        public List<User> Students { get; set; }
+
+        public List<Tournament> Tournaments { get; set; }
     }
 }

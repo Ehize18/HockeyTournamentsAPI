@@ -3,6 +3,7 @@ using System;
 using HockeyTournamentsAPI.Database.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 {
     [DbContext(typeof(HockeyTournamentsDbContext))]
-    partial class HockeyTournamentsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422175759_TourAdded")]
+    partial class TourAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,91 +24,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Match", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<Guid>("RefereeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<Guid>("TourId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RefereeId");
-
-                    b.HasIndex("TourId");
-
-                    b.ToTable("Matches", (string)null);
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Team", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<int>("Goals")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("MatchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.ToTable("Teams", (string)null);
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.TeamMember", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.Property<Guid>("ParticipantId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamptz");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParticipantId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TeamMembers", (string)null);
-                });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tour", b =>
                 {
@@ -135,7 +53,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Tours", (string)null);
+                    b.ToTable("Tours");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tournament", b =>
@@ -165,7 +83,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournaments", (string)null);
+                    b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.TournamentParticipant", b =>
@@ -178,11 +96,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                         .HasColumnType("timestamptz");
 
                     b.Property<bool>("IsAccepted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<bool>("IsKicked")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
@@ -206,7 +119,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("TournamentParticipants", (string)null);
+                    b.ToTable("TournamentParticipants");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.User", b =>
@@ -271,56 +184,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.HasIndex("TrainerId");
 
-                    b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Match", b =>
-                {
-                    b.HasOne("HockeyTournamentsAPI.Core.Models.User", "Referee")
-                        .WithMany()
-                        .HasForeignKey("RefereeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HockeyTournamentsAPI.Core.Models.Tour", "Tour")
-                        .WithMany("Matches")
-                        .HasForeignKey("TourId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Referee");
-
-                    b.Navigation("Tour");
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Team", b =>
-                {
-                    b.HasOne("HockeyTournamentsAPI.Core.Models.Match", "Match")
-                        .WithMany("Teams")
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match");
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.TeamMember", b =>
-                {
-                    b.HasOne("HockeyTournamentsAPI.Core.Models.TournamentParticipant", "Participant")
-                        .WithMany()
-                        .HasForeignKey("ParticipantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HockeyTournamentsAPI.Core.Models.Team", "Team")
-                        .WithMany("Members")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Participant");
-
-                    b.Navigation("Team");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tour", b =>
@@ -360,21 +224,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                         .HasForeignKey("TrainerId");
 
                     b.Navigation("Trainer");
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Match", b =>
-                {
-                    b.Navigation("Teams");
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Team", b =>
-                {
-                    b.Navigation("Members");
-                });
-
-            modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tour", b =>
-                {
-                    b.Navigation("Matches");
                 });
 
             modelBuilder.Entity("HockeyTournamentsAPI.Core.Models.Tournament", b =>

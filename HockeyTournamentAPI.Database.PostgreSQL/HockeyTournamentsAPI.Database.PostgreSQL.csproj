@@ -18,8 +18,4 @@
     <ProjectReference Include="..\HockeyTournamentsAPI.Core\HockeyTournamentsAPI.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>
