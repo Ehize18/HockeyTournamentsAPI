@@ -3,6 +3,8 @@ using HockeyTournamentsAPI;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
+builder.Services.AddApplicationCors();
+
 // Add services to the container.
 builder.Services
     .AddPostgreSQLDb(config.GetConnectionString("PostgreSQL")!)
@@ -21,11 +23,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDevPolicy();
 }
 
-await app.CheckDefaultUsers();
-
 app.MigrateDb();
+
+await app.CheckDefaultUsers();
 
 app.UseHttpsRedirection();
 

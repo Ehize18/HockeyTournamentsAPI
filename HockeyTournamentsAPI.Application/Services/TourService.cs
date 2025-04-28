@@ -10,18 +10,70 @@ namespace HockeyTournamentsAPI.Application.Services
         private readonly IToursRepository _toursRepository;
         private readonly IMatchesRepository _matchesRepository;
         private readonly ITeamsRepository _teamsRepository;
+        private readonly ITournamentsRepository _turnamentsRepository;
 
         public TourService(IToursRepository toursRepository,
-            IMatchesRepository matchesRepository, ITeamsRepository teamsRepository)
+            IMatchesRepository matchesRepository,
+            ITeamsRepository teamsRepository,
+            ITournamentsRepository tournamentsRepository)
         {
             _toursRepository = toursRepository;
             _matchesRepository = matchesRepository;
             _teamsRepository = teamsRepository;
+            _turnamentsRepository = tournamentsRepository;
         }
 
-        private List<TournamentParticipant> GetActiveParticipants(Tournament tournament)
+        public async Task<List<Tour>> CreateTours(Tournament tournament, User referee, int toursCount, int teamMemberCount)
         {
-            return tournament.Participants.Where(p => p.IsAccepted && !p.IsKicked).ToList();
+            var tourParticipants = tournament.Participants.Where(p => !p.IsKicked && p.IsAccepted).ToList();
+
+            if (tournament.Tours == null)
+            {
+                tournament.Tours = new List<Tour>();
+            }
+
+            for (var i = 0; i < toursCount; i++)
+            {
+                var tour = CreateTour(tournament, tourParticipants, teamMemberCount);
+
+                if (tour == null)
+                {
+                    return new List<Tour>();
+                }
+
+                foreach (var match in tour.Matches)
+                {
+                    match.Referee = referee;
+                }
+
+                tournament.Tours.Add(tour);
+                tournament = await _turnamentsRepository.UpdateAsync(tournament);
+            }
+
+            return tournament.Tours;
+        }
+
+        public async Task<List<Tour>> GetToursByTournamentId(Guid tournamentId)
+        {
+            var tours = await _toursRepository.GetByTorunamentIdWithParticipants(tournamentId);
+
+            return tours;
+        }
+
+        public async Task<Tour?> GetTourById(Guid tourId)
+        {
+            var tour = await _toursRepository.GetByIdWithParticipants(tourId);
+
+            return tour;
+        }
+
+        private void PrepareParticipantsForTour(List<TournamentParticipant> participants)
+        {
+            foreach (var participant in participants)
+            {
+                participant.CanPlay = true;
+                participant.GamesInRow = 0;
+            }
         }
 
         private List<TournamentParticipant> FindOpponents(List<TournamentParticipant> participants)
@@ -57,34 +109,7 @@ namespace HockeyTournamentsAPI.Application.Services
             return participants;
         }
 
-        public List<Tour> CreateTours(Tournament tournament, int toursCount, int teamMemberCount)
-        {
-            var tourParticipants = tournament.Participants.Where(p => !p.IsKicked && p.IsAccepted).ToList();
-
-            if (tournament.Tours == null)
-            {
-                tournament.Tours = new List<Tour>();
-            }
-
-            for (var i = 0; i < toursCount; i++)
-            {
-                var tour = CreateTour(tournament, tourParticipants, teamMemberCount);
-                tournament.Tours.Add(tour);
-            }
-
-            return tournament.Tours;
-        }
-
-        private void PrepareParticipantsForTour(List<TournamentParticipant> participants)
-        {
-            foreach (var participant in participants)
-            {
-                participant.CanPlay = true;
-                participant.GamesInRow = 0;
-            }
-        }
-
-        private Tour CreateTour(Tournament tournament, List<TournamentParticipant> participants, int teamMemberCount)
+        private Tour? CreateTour(Tournament tournament, List<TournamentParticipant> participants, int teamMemberCount)
         {
             PrepareParticipantsForTour(participants);
 
@@ -103,10 +128,15 @@ namespace HockeyTournamentsAPI.Application.Services
 
             tour = CreateMatches(tour, teamMemberCount);
 
+            if (tour == null)
+            {
+                return null;
+            }
+
             return tour;
         }
 
-        private Tour CreateMatches(Tour tour, int teamMemberCount)
+        private Tour? CreateMatches(Tour tour, int teamMemberCount)
         {
             var participantsWithNotPlayed = LoadNotPlayed(tour.Participants);
 
@@ -119,7 +149,12 @@ namespace HockeyTournamentsAPI.Application.Services
             {
                 var pivotPlayer = GetPivotPlayer(participantsWithNotPlayed);
                 var match = CreateMatch(pivotPlayer, teamMemberCount, tour.Participants);
-                tour.Matches.Add(match);
+
+                if (match == null)
+                {
+                    return null;
+                }
+                tour.Matches.Add(match!);
                 participantsWithNotPlayed = UpdateNotPlayed(participantsWithNotPlayed);
                 UpdateGamesInRow(tour);
             }
@@ -159,7 +194,7 @@ namespace HockeyTournamentsAPI.Application.Services
             }
         }
 
-        private Match CreateMatch(TournamentParticipant pivotPlayer, int teamMemberCount, List<TournamentParticipant> allParticipants)
+        private Match? CreateMatch(TournamentParticipant pivotPlayer, int teamMemberCount, List<TournamentParticipant> allParticipants)
         {
             var match = new Match()
             {
@@ -191,7 +226,7 @@ namespace HockeyTournamentsAPI.Application.Services
                 var opponent = GetOpponent(pivotPlayer, allParticipants);
                 if (opponent == null)
                 {
-                    var test = 1;
+                    return null;
                 }
                 match.Teams[1].Members.Add(new TeamMember
                 {
@@ -244,7 +279,7 @@ namespace HockeyTournamentsAPI.Application.Services
                 foreach (var member in team.Members)
                 {
                     member.Participant.GamesInRow++;
-                    if (member.Participant.GamesInRow == 3)
+                    if (member.Participant.GamesInRow == 2)
                     {
                         member.Participant.CanPlay = false;
                     }

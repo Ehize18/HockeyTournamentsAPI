@@ -82,7 +82,19 @@ namespace HockeyTournamentsAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITournamentService, TournamentService>();
             services.AddScoped<ITourService, TourService>();
+            services.AddScoped<IMatchService, MatchService>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddApplicationCors(this IServiceCollection services)
+        {
+            services.AddCors(
+                o => o.AddPolicy("DevPolicy", 
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()));
             return services;
         }
     }

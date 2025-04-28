@@ -54,5 +54,12 @@ namespace HockeyTournamentsAPI
 
             return webApplication;
         }
+
+        public static WebApplication UseDevPolicy(this WebApplication webApplication)
+        {
+            webApplication.UseCors("DevPolicy");
+
+            return webApplication;
+        }
     }
 }

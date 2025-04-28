@@ -1,5 +1,6 @@
-﻿using HockeyTournamentsAPI.Application.Interfaces;
-using HockeyTournamentsAPI.Core.Models;
+﻿using HockeyTournamentsAPI.Application.Contracts.Tours;
+using HockeyTournamentsAPI.Application.Interfaces;
+using HockeyTournamentsAPI.Application.Map;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,16 +12,18 @@ namespace HockeyTournamentsAPI.Controllers
     {
         private readonly ITourService _tourService;
         private readonly ITournamentService _tournamentService;
+        private readonly IUserService _userService;
 
-        public ToursController(ITourService tourService, ITournamentService tournamentService)
+        public ToursController(ITourService tourService, ITournamentService tournamentService, IUserService userService)
         {
             _tourService = tourService;
             _tournamentService = tournamentService;
+            _userService = userService;
         }
 
         [HttpPost]
         [Authorize(Roles = "Supervisor,Administrator")]
-        public async Task<ActionResult<List<Tour>>> CreateTours(Guid tournamentId, [FromBody] int teamMemberCount)
+        public async Task<ActionResult<List<TourResponse>>> CreateTours(Guid tournamentId, [FromBody] TourRequest request)
         {
             var tournament = await _tournamentService.GetTournamentWithParticipants(tournamentId);
 
@@ -29,7 +32,19 @@ namespace HockeyTournamentsAPI.Controllers
                 return NotFound();
             }
 
-            var tours = _tourService.CreateTours(tournament, 3, teamMemberCount);
+            var referee = await _userService.GetUserByIdAsync(request.RefereeId);
+
+            if (referee == null)
+            {
+                return NotFound($"Судья с id: {request.RefereeId} не найден");
+            }
+
+            var tours = await _tourService.CreateTours(tournament, referee, request.TourCount, request.MembersInTeams);
+
+            if (tours.Count == 0)
+            {
+                return BadRequest($"Не хватает игроков, для заданных параметров. Низкое количество игроков тура. При количестве игроков в командах = {request.MembersInTeams}");
+            }
 
             foreach (var tour in tours)
             {
@@ -44,7 +59,50 @@ namespace HockeyTournamentsAPI.Controllers
                 }
             }
 
-            return Ok(tours);
+            var response = tours.ToResponse();
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<List<TourResponse>>> GetTours(Guid tournamentId)
+        {
+            var tournament = await _tournamentService.GetById(tournamentId);
+
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            var tours = await _tourService.GetToursByTournamentId(tournamentId);
+
+            var response = tours.ToResponse();
+
+            return Ok(response);
+        }
+
+        [HttpGet("{tourId:guid}")]
+        [Authorize]
+        public async Task<ActionResult<List<TourResponse>>> GetTours(Guid tournamentId, Guid tourId)
+        {
+            var tournament = await _tournamentService.GetById(tournamentId);
+
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            var tour = await _tourService.GetTourById(tourId);
+
+            if (tour == null)
+            {
+                return NotFound();
+            }
+
+            var response = tour.ToResponse();
+
+            return Ok(response);
         }
     }
 }
