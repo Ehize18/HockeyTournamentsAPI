@@ -2,5 +2,5 @@
 
 namespace HockeyTournamentsAPI.Application.Contracts.Matches
 {
-    public record MatchResponse(Guid id, List<TeamResponse> Teams, DateTime StartTime, DateTime EndTime);
+    public record MatchResultRequest(TeamGoalsRequest LeftTeam, TeamGoalsRequest RightTeam);
 }

@@ -26,6 +26,10 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
             builder.HasMany(t => t.Participants)
                 .WithOne(p => p.Tournament)
                 .HasForeignKey(p => p.TournamentId);
+
+            builder.Property(t => t.CanParticipate)
+                .HasColumnType ("boolean")
+                .HasDefaultValue(true);
         }
     }
 }

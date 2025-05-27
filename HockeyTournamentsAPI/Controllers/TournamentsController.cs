@@ -22,6 +22,11 @@ namespace HockeyTournamentsAPI.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Создаёт турнир.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Supervisor,Administrator")]
         public async Task<ActionResult<TournamentResponse>> CreateAsync([FromBody]TournamentRequest request)
@@ -39,6 +44,10 @@ namespace HockeyTournamentsAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает список всех турниров.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<List<TournamentResponse>>> GetAllAsync()
         {
@@ -51,6 +60,11 @@ namespace HockeyTournamentsAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает турнир по id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<TournamentResponse>> GetById(Guid id)
         {
@@ -66,12 +80,6 @@ namespace HockeyTournamentsAPI.Controllers
                 .ToResponse();
 
             return Ok(response);
-        }
-
-        [HttpPost("Start/{id:guid}")]
-        public async Task<ActionResult> Start(Guid id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

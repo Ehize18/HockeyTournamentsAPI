@@ -17,5 +17,13 @@
         public bool CanPlay { get; set; }
 
         public List<TournamentParticipant> NotPlayedParticipants { get; set; }
+
+        public List<TournamentParticipant> AvailableOpponents { get; set; }
+
+        public int Age { get; set; }
+
+        public List<Match> MatchPlayedInTour { get; set; }
+
+        public int ToursPlayed { get; set; }
     }
 }

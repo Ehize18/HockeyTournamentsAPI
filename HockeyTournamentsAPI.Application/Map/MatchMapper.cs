@@ -15,7 +15,7 @@ namespace HockeyTournamentsAPI.Application.Map
                 teamsResponses.Add(team.ToResponse());
             }
 
-            return new MatchResponse(match.Id, teamsResponses);
+            return new MatchResponse(match.Id, teamsResponses, match.StartTime, match.EndTime);
         }
     }
 }

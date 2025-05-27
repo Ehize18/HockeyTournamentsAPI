@@ -115,12 +115,16 @@ namespace HockeyTournamentsAPI.Application.Services
 
             participants = FindOpponents(participants);
 
-            foreach (var participant in participants)
+            var tour = new Tour();
+
+            var startTime = tournament.StartTime;
+
+            if (tournament.Tours.Count > 0)
             {
-                participant.CanPlay = true;
+                startTime = tournament.Tours.Last().EndTime.AddMinutes(30);
             }
 
-            var tour = new Tour();
+            tour.StartTime = startTime;
 
             tour.ParticipantsCount = participants.Count;
 
@@ -132,6 +136,8 @@ namespace HockeyTournamentsAPI.Application.Services
             {
                 return null;
             }
+
+            tour.EndTime = tour.Matches.Last().EndTime;
 
             return tour;
         }
@@ -147,15 +153,32 @@ namespace HockeyTournamentsAPI.Application.Services
 
             while (participantsWithNotPlayed.Count > 0)
             {
-                var pivotPlayer = GetPivotPlayer(participantsWithNotPlayed);
+                var pivotPlayer = GetPivotPlayer(tour.Participants);
                 var match = CreateMatch(pivotPlayer, teamMemberCount, tour.Participants);
 
                 if (match == null)
                 {
                     return null;
                 }
+
+                var startTime = tour.StartTime;
+
+                if (tour.Matches.Count > 0)
+                {
+                    startTime = tour.Matches.Last().EndTime.AddSeconds(30);
+                }
+
+                match.StartTime = startTime;
+                match.EndTime = startTime.AddMinutes(1);
+
                 tour.Matches.Add(match!);
                 participantsWithNotPlayed = UpdateNotPlayed(participantsWithNotPlayed);
+
+                if (tour.Matches.Count > 30)
+                {
+                    var test = 1;
+                }
+
                 UpdateGamesInRow(tour);
             }
             return tour;
@@ -219,7 +242,12 @@ namespace HockeyTournamentsAPI.Application.Services
             {
                 Participant = pivotPlayer.Opponent
             });
+
+            pivotPlayer.CanPlay = false;
             pivotPlayer.Opponent.CanPlay = false;
+
+            pivotPlayer.NotPlayedParticipants.Remove(pivotPlayer.Opponent);
+            pivotPlayer.Opponent.NotPlayedParticipants.Remove(pivotPlayer);
 
             for (var i = 1; i < teamMemberCount; i++)
             {
@@ -239,18 +267,12 @@ namespace HockeyTournamentsAPI.Application.Services
                 opponent.CanPlay = false;
                 opponent.Opponent.CanPlay = false;
 
-                pivotPlayer.NotPlayedParticipants.Remove(opponent);
-                pivotPlayer.NotPlayedParticipants.Remove(opponent.Opponent);
-
-                foreach (var team in match.Teams)
+                for (var j = 0; j < match.Teams[0].Members.Count; j++)
                 {
-                    foreach (var member in team.Members)
-                    {
-                        opponent.NotPlayedParticipants.Remove(member.Participant);
-                        opponent.Opponent.NotPlayedParticipants.Remove(member.Participant);
-                        member.Participant.NotPlayedParticipants.Remove(opponent);
-                        member.Participant.NotPlayedParticipants.Remove(opponent.Opponent);
-                    }
+                    match.Teams[0].Members[j].Participant.NotPlayedParticipants.Remove(opponent);
+                    match.Teams[1].Members[j].Participant.NotPlayedParticipants.Remove(opponent.Opponent);
+                    opponent.NotPlayedParticipants.Remove(match.Teams[0].Members[j].Participant);
+                    opponent.Opponent.NotPlayedParticipants.Remove(match.Teams[1].Members[j].Participant);
                 }
             }
 
@@ -279,7 +301,7 @@ namespace HockeyTournamentsAPI.Application.Services
                 foreach (var member in team.Members)
                 {
                     member.Participant.GamesInRow++;
-                    if (member.Participant.GamesInRow == 2)
+                    if (member.Participant.GamesInRow > 2)
                     {
                         member.Participant.CanPlay = false;
                     }
@@ -289,18 +311,9 @@ namespace HockeyTournamentsAPI.Application.Services
 
         private TournamentParticipant? GetOpponent(TournamentParticipant pivotPlayer, List<TournamentParticipant> participants)
         {
-            var availableOpponents = new List<TournamentParticipant>();
-
             foreach (var opponent in pivotPlayer.NotPlayedParticipants)
             {
-                if (opponent.CanPlay && opponent.Opponent.CanPlay)
-                {
-                    availableOpponents.Add(opponent);
-                }
-            }
-
-            foreach (var opponent in pivotPlayer.NotPlayedParticipants)
-            {
+                //Хранить двух опонентов
                 if (opponent.CanPlay && opponent.Opponent.CanPlay)
                 {
                     return opponent;
@@ -332,7 +345,7 @@ namespace HockeyTournamentsAPI.Application.Services
 
         private TournamentParticipant GetPivotPlayer(List<TournamentParticipant> participants)
         {
-            var pivot = participants.OrderByDescending(p => p.NotPlayedParticipants.Count).FirstOrDefault();
+            var pivot = participants.OrderByDescending(p => p.NotPlayedParticipants.Count).FirstOrDefault(p => p.CanPlay && p.Opponent.CanPlay);
 
             return pivot;
         }

@@ -119,6 +119,20 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Repositories
             }
         }
 
+        public async Task<List<TEntity>> UpdateRangeAsync(List<TEntity> entities)
+        {
+            try
+            {
+                _context.Set<TEntity>().UpdateRange(entities);
+                await _context.SaveChangesAsync();
+                return entities;
+            }
+            catch (Exception ex)
+            {
+                throw new UnknownDbException($"{ex.Message}", ex);
+            }
+        }
+
         /// <summary>
         /// Сохраняет все изменения.
         /// </summary>

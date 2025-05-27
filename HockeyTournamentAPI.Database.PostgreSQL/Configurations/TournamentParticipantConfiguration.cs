@@ -15,9 +15,12 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
 
             builder.Property(p => p.IsAccepted)
                 .HasColumnType("boolean")
-                .HasDefaultValue(false);
+                .HasDefaultValue(true);
 
             builder.Property(p => p.RatingOnTournament)
+                .HasColumnType("integer");
+
+            builder.Property(p => p.ToursPlayed)
                 .HasColumnType("integer");
 
             builder.HasOne(p => p.Tournament)
@@ -36,6 +39,9 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
             builder.Ignore(p => p.GamesInRow);
             builder.Ignore(p => p.CanPlay);
             builder.Ignore(p => p.NotPlayedParticipants);
+            builder.Ignore(p => p.Age);
+            builder.Ignore(p => p.AvailableOpponents);
+            builder.Ignore(p => p.MatchPlayedInTour);
         }
     }
 }

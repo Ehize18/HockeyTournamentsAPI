@@ -7,7 +7,7 @@ namespace HockeyTournamentsAPI.Application.Map
     {
         public static TourResponse ToResponse(this Tour tour)
         {
-            return new TourResponse(tour.Id, tour.Matches.Count, tour.Participants.Count);
+            return new TourResponse(tour.Id, tour.Matches.Count, tour.Participants.Count, tour.StartTime, tour.EndTime);
         }
 
         public static List<TourResponse> ToResponse(this List<Tour> tours)

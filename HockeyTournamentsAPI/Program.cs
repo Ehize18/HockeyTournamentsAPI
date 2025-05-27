@@ -3,18 +3,26 @@ using HockeyTournamentsAPI;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
+config.AddEnvironmentVariables();
+
 builder.Services.AddApplicationCors();
 
 // Add services to the container.
 builder.Services
-    .AddPostgreSQLDb(config.GetConnectionString("PostgreSQL")!)
+    .AddPostgreSQLDb(config)
     .AddDbRepositories();
 builder.Services.AddJwtAuthentication(config.GetSection("Jwt"));
 builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var filePath = Path.Combine(AppContext.BaseDirectory, "HockeyTournamentsAPI.xml");
+    c.IncludeXmlComments(filePath);
+});
+
+builder.Services.AddBackGroundServices();
 
 var app = builder.Build();
 

@@ -46,5 +46,21 @@ namespace HockeyTournamentsAPI.Application.Services
             }
             return true;
         }
+
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            return await _usersRepository.UpdateAsync(user);
+        }
+
+        public async Task<List<User>> GetUsersAsync(int ageFrom, int ageTo, int page, int pageSize, bool? gender, string orderBy, bool isAscending)
+        {
+            var today = DateTime.UtcNow;
+
+            var from = DateOnly.FromDateTime(today.AddYears(-ageFrom));
+
+            var to = DateOnly.FromDateTime(today.AddYears(-ageTo));
+
+            return await _usersRepository.GetUsersWithFiltrationAsync(from, to, page, pageSize, gender, orderBy, isAscending);
+        }
     }
 }

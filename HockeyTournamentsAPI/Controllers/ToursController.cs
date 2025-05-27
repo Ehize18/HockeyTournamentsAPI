@@ -1,6 +1,7 @@
 ﻿using HockeyTournamentsAPI.Application.Contracts.Tours;
 using HockeyTournamentsAPI.Application.Interfaces;
 using HockeyTournamentsAPI.Application.Map;
+using HockeyTournamentsAPI.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,12 @@ namespace HockeyTournamentsAPI.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Создаёт туры в турнире.
+        /// </summary>
+        /// <param name="tournamentId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Supervisor,Administrator")]
         public async Task<ActionResult<List<TourResponse>>> CreateTours(Guid tournamentId, [FromBody] TourRequest request)
@@ -39,6 +46,11 @@ namespace HockeyTournamentsAPI.Controllers
                 return NotFound($"Судья с id: {request.RefereeId} не найден");
             }
 
+            if (referee.Role != Role.Judge)
+            {
+                return BadRequest($"Пользователь с id: {request.RefereeId} не судья");
+            }
+
             var tours = await _tourService.CreateTours(tournament, referee, request.TourCount, request.MembersInTeams);
 
             if (tours.Count == 0)
@@ -46,24 +58,16 @@ namespace HockeyTournamentsAPI.Controllers
                 return BadRequest($"Не хватает игроков, для заданных параметров. Низкое количество игроков тура. При количестве игроков в командах = {request.MembersInTeams}");
             }
 
-            foreach (var tour in tours)
-            {
-                Console.WriteLine("---Tour---");
-                foreach (var match in tour.Matches)
-                {
-                    Console.WriteLine("---Match---");
-                    for (var i = 0; i < match.Teams[0].Members.Count; i++)
-                    {
-                        Console.WriteLine($"{match.Teams[0].Members[i].Participant.Id} --- {match.Teams[1].Members[i].Participant.Id}");
-                    }
-                }
-            }
-
             var response = tours.ToResponse();
 
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает список всех туров турнира.
+        /// </summary>
+        /// <param name="tournamentId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<List<TourResponse>>> GetTours(Guid tournamentId)
@@ -82,6 +86,12 @@ namespace HockeyTournamentsAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает конкретный тур турнира по id.
+        /// </summary>
+        /// <param name="tournamentId"></param>
+        /// <param name="tourId"></param>
+        /// <returns></returns>
         [HttpGet("{tourId:guid}")]
         [Authorize]
         public async Task<ActionResult<List<TourResponse>>> GetTours(Guid tournamentId, Guid tourId)

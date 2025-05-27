@@ -1,10 +1,8 @@
 ﻿using System.Security.Claims;
 using HockeyTournamentsAPI.Application.Contracts.Participants;
-using HockeyTournamentsAPI.Application.Contracts.Tournaments;
 using HockeyTournamentsAPI.Application.Interfaces;
 using HockeyTournamentsAPI.Application.Map;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HockeyTournamentsAPI.Controllers
@@ -22,6 +20,11 @@ namespace HockeyTournamentsAPI.Controllers
             _tournamentService = tournamentService;
         }
 
+        /// <summary>
+        /// Записывает текущего пользователя на выбранный турнир.
+        /// </summary>
+        /// <param name="tournamentId"></param>
+        /// <returns></returns>
         [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<ActionResult<TournamentParticipantResponse>> AddParticipant(Guid tournamentId)
@@ -43,6 +46,11 @@ namespace HockeyTournamentsAPI.Controllers
                 return NotFound($"Турнир с id: {tournamentId} не найден.");
             }
 
+            if (!tournament.CanParticipate)
+            {
+                return BadRequest($"На турнир закрыта запись.");
+            }
+
             var participant = await _tournamentService.AddParticipantAsync(tournament, user);
 
             if (participant == null)
@@ -55,6 +63,11 @@ namespace HockeyTournamentsAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получает список участников турнира.
+        /// </summary>
+        /// <param name="tournamentId"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<List<TournamentParticipantResponse>>> GetParticipants(Guid tournamentId)
         {
@@ -69,13 +82,22 @@ namespace HockeyTournamentsAPI.Controllers
 
             var response = participants.ToResponse(tournament);
 
+            response.Sort((a, b) => b.RatingOnTournament - a.RatingOnTournament);
+
             return response;
         }
 
+        /// <summary>
+        /// Меняет статус участия игрока в турнире.
+        /// </summary>
+        /// <param name="tournamentId"></param>
+        /// <param name="participantId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Administrator,Supervisor")]
         [HttpPatch("{participantId:guid}")]
         public async Task<ActionResult<TournamentParticipantResponse>> AcceptParticipant(
-            Guid tournamentId, Guid participantId, [FromBody] bool isAccepted = true)
+            Guid tournamentId, Guid participantId, [FromBody] ChangeParticipantStatusRequest request)
         {
             var tournament = await _tournamentService.GetById(tournamentId);
 
@@ -91,7 +113,7 @@ namespace HockeyTournamentsAPI.Controllers
                 return NotFound($"Участник турнира с id: {participantId} не найден");
             }
 
-            var changed = await _tournamentService.ChangeParticipantStatus(participant, isAccepted);
+            var changed = await _tournamentService.ChangeParticipantStatus(participant, request.IsAccepted);
 
             var response = changed.ToResponse(tournament);
 

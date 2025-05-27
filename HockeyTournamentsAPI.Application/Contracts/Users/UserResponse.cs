@@ -9,5 +9,6 @@ namespace HockeyTournamentsAPI.Application.Contracts.Users
         string Email, string Phone,
         string SportLevel,
         RoleResponse Role,
-        Guid? TrainerId);
+        Guid? TrainerId,
+        int Rating);
 }

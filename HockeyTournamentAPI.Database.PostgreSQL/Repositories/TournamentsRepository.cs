@@ -13,9 +13,23 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Repositories
         {
             var tournament = await _context.Tournaments
                 .Include(t => t.Participants)
+                .ThenInclude(p => p.User)
+                .Include(t => t.Tours)
                 .FirstOrDefaultAsync(t => t.Id == tournamentId);
 
             return tournament;
+        }
+
+        public async Task<List<Tournament>> GetTournamentsStartInDates(DateTime from, DateTime to)
+        {
+            var tournaments = await _context.Tournaments
+                .Include(t => t.Participants)
+                .ThenInclude(p => p.User)
+                .Include(t => t.Tours)
+                .Where(t => t.StartTime > from && t.StartTime <= to)
+                .ToListAsync();
+
+            return tournaments;
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using HockeyTournamentsAPI.Database.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 {
     [DbContext(typeof(HockeyTournamentsDbContext))]
-    partial class HockeyTournamentsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250527112209_TournamentParticipation")]
+    partial class TournamentParticipation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

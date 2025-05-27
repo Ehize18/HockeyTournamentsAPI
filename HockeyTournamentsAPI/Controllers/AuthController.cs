@@ -20,6 +20,11 @@ namespace HockeyTournamentsAPI.Controllers
             _authService = authService;
         }
 
+        /// <summary>
+        /// Регистрация.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Route("Register")]
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]RegisterRequest request)
@@ -33,6 +38,11 @@ namespace HockeyTournamentsAPI.Controllers
             return BadRequest("Ошибка регистрации.");
         }
 
+        /// <summary>
+        /// Логин.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Route("Login")]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]LoginRequest request)
@@ -51,6 +61,10 @@ namespace HockeyTournamentsAPI.Controllers
             return Ok(token);
         }
 
+        /// <summary>
+        /// Выход.
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [Route("Logout")]
         [HttpPost]

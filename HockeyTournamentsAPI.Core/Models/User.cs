@@ -59,7 +59,9 @@
         /// <summary>
         /// Id телеграма.
         /// </summary>
-        public int? TelegramId { get; set; }
+        public long? TelegramId { get; set; }
+
+        public long? TelegramChatId { get; set; }
 
         /// <summary>
         /// Роль пользователя.

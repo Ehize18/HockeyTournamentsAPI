@@ -53,7 +53,8 @@ namespace HockeyTournamentsAPI.Application.Services
             var participant = new TournamentParticipant()
             {
                 User = user,
-                Tournament = tournament
+                Tournament = tournament,
+                IsAccepted = true
             };
 
             var entity = await _participantsRepository.CreateAsync(participant);

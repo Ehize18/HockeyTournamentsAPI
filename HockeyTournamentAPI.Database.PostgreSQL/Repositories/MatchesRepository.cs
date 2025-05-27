@@ -25,7 +25,18 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Repositories
             var matches = await _context.Matches
                 .Include(m => m.Teams)
                 .ThenInclude(t => t.Members)
+                .ThenInclude(m => m.Participant)
+                .Include(m => m.Referee)
                 .Where(m => m.TourId == tourId)
+                .ToListAsync();
+
+            return matches;
+        }
+
+        public async Task<List<Match>> GetMatchesEndsInTimes(DateTime from, DateTime to)
+        {
+            var matches = await _context.Matches
+                .Where(m => m.EndTime > from && m.EndTime <= to && m.IsLastMatchInTour)
                 .ToListAsync();
 
             return matches;

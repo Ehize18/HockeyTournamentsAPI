@@ -6,5 +6,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Interfaces
     {
         Task<Match?> GetMatchByIdWithTeams(Guid matchId);
         Task<List<Match>> GetMatchesByTourIdWithTeams(Guid tourId);
+        Task<List<Match>> GetMatchesEndsInTimes(DateTime from, DateTime to);
     }
 }

@@ -9,6 +9,7 @@ using HockeyTournamentsAPI.Application.Interfaces;
 using HockeyTournamentsAPI.Application.Services;
 using HockeyTournamentsAPI.Database.PostgreSQL.Interfaces;
 using HockeyTournamentsAPI.Database.PostgreSQL.Repositories;
+using HockeyTournamentsAPI.BackgroudWorkers;
 
 namespace HockeyTournamentsAPI
 {
@@ -21,14 +22,21 @@ namespace HockeyTournamentsAPI
         /// Добавляет PostgreSQL базу данных.
         /// </summary>
         /// <param name="services">Коллекция сервисов.</param>
-        /// <param name="connectionString">Строка подключения.</param>
+        /// <param name="config">Конфигурация.</param>
         /// <returns>Коллекция сервисов.</returns>
-        public static IServiceCollection AddPostgreSQLDb(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddPostgreSQLDb(this IServiceCollection services, IConfiguration config)
         {
+            var connectionString = config["POSTGRES_CONNECTION_STRING"];
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = config.GetConnectionString("PostgreSQL")!;
+            }
+
             services.AddDbContext<HockeyTournamentsDbContext>(builder =>
             {
                 builder.UseNpgsql(connectionString);
-            });
+            }, ServiceLifetime.Transient);
             return services;
         }
 
@@ -81,8 +89,10 @@ namespace HockeyTournamentsAPI
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITournamentService, TournamentService>();
-            services.AddScoped<ITourService, TourService>();
-            services.AddScoped<IMatchService, MatchService>();
+            services.AddScoped<ITourService, TourServiceDeep>();
+            services.AddScoped<IMatchService, MatchServiceV2>();
+            services.AddScoped<MatchMaker>();
+            services.AddTransient<IRatingService, RatingService>();
 
             return services;
         }
@@ -95,6 +105,14 @@ namespace HockeyTournamentsAPI
                         .AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()));
+            return services;
+        }
+
+        public static IServiceCollection AddBackGroundServices(this IServiceCollection services)
+        {
+            services.AddHostedService<TourWorker>();
+            services.AddHostedService<TournamentWorker>();
+
             return services;
         }
     }

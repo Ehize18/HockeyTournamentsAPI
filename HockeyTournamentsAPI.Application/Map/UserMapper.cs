@@ -5,7 +5,7 @@ namespace HockeyTournamentsAPI.Application.Map
 {
     public static class UserMapper
     {
-        public static UserResponse MapToResponse(this User user)
+        public static UserResponse ToResponse(this User user)
         {
             var response = new UserResponse(
                 user.Id,
@@ -14,7 +14,8 @@ namespace HockeyTournamentsAPI.Application.Map
                 user.Email, user.Phone,
                 user.SportLevel,
                 user.Role.ToResponse(),
-                user.TrainerId);
+                user.TrainerId,
+                user.Rating);
             return response;
         }
     }

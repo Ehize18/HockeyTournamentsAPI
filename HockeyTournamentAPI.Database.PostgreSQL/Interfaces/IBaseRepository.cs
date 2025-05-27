@@ -10,5 +10,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Interfaces
         Task<TEntity?> GetByIdAsync(Guid id);
         Task SaveChangesAsync();
         Task<TEntity> UpdateAsync(TEntity entity);
+        Task<List<TEntity>> UpdateRangeAsync(List<TEntity> entities);
     }
 }

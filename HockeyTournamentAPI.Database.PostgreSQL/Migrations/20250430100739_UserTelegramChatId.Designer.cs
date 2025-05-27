@@ -3,6 +3,7 @@ using System;
 using HockeyTournamentsAPI.Database.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 {
     [DbContext(typeof(HockeyTournamentsDbContext))]
-    partial class HockeyTournamentsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430100739_UserTelegramChatId")]
+    partial class UserTelegramChatId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,11 +36,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("timestamptz");
-
-                    b.Property<bool>("IsLastMatchInTour")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
 
                     b.Property<Guid>("RefereeId")
                         .HasColumnType("uuid");
@@ -149,11 +147,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("CanParticipate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamptz");
 
@@ -190,7 +183,7 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
                     b.Property<bool>("IsAccepted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsKicked")
                         .ValueGeneratedOnAdd()
@@ -202,9 +195,6 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Migrations
 
                     b.Property<Guid>("TournamentId")
                         .HasColumnType("uuid");
-
-                    b.Property<int>("ToursPlayed")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamptz");

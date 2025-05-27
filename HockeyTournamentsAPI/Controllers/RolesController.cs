@@ -11,6 +11,10 @@ namespace HockeyTournamentsAPI.Controllers
     {
         public RolesController() { }
 
+        /// <summary>
+        /// Возвращает список всех ролей.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<List<RoleResponse>> GetRoles()
         {
@@ -24,6 +28,11 @@ namespace HockeyTournamentsAPI.Controllers
             return Ok(roles);
         }
 
+        /// <summary>
+        /// Возвращает роль по id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}")]
         public ActionResult<RoleResponse> GetRole(int id)
         {
@@ -33,8 +42,6 @@ namespace HockeyTournamentsAPI.Controllers
             }
 
             var role = (Role)id;
-
-            var tupe = role.GetType();
 
             return Ok(role.ToResponse());
         }

@@ -22,6 +22,10 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
                 .HasColumnType("timestamptz");
             builder.Property(t => t.EndTime)
                 .HasColumnType("timestamptz");
+
+            builder.Property(t => t.IsLastMatchInTour)
+                .HasColumnType("boolean")
+                .HasDefaultValue(false);
         }
     }
 }

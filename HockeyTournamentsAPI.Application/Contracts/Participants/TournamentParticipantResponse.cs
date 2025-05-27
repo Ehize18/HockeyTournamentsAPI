@@ -6,5 +6,6 @@
         string FirstName, string? MiddleName, string LastName,
         bool isAccepted,
         Guid TournamentId,
-        string TournamentTitle);
+        string TournamentTitle,
+        int RatingOnTournament);
 }

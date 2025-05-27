@@ -15,7 +15,8 @@ namespace HockeyTournamentsAPI.Application.Map
                 user.FirstName, user.MiddleName, user.LastName,
                 participant.IsAccepted,
                 tournament.Id,
-                tournament.Title
+                tournament.Title,
+                participant.RatingOnTournament
                 );
 
             return response;
@@ -31,7 +32,8 @@ namespace HockeyTournamentsAPI.Application.Map
                 participant.User.FirstName, participant.User.MiddleName, participant.User.LastName,
                 participant.IsAccepted,
                 tournament.Id,
-                tournament.Title
+                tournament.Title,
+                participant.RatingOnTournament
                 );
 
             return response;

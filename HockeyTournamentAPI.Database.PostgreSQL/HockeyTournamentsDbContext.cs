@@ -39,5 +39,28 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL
             modelBuilder.ApplyConfiguration(new TeamMemberConfiguration());
             base.OnModelCreating(modelBuilder);
         }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var now = DateTime.UtcNow;
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is BaseModel entity)
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entity.CreatedAt = now;
+                        entity.UpdatedAt = now;
+                    }
+                    else if (entry.State == EntityState.Modified)
+                    {
+                        entity.UpdatedAt = now;
+                    }
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
     }
 }

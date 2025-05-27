@@ -12,5 +12,7 @@
         public DateTime EndTime { get; set; }
 
         public List<Team> Teams { get; set; }
+
+        public bool IsLastMatchInTour { get; set; }
     }
 }

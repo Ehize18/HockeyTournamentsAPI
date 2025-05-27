@@ -40,7 +40,10 @@ namespace HockeyTournamentsAPI.Database.PostgreSQL.Configurations
                 .HasColumnType("integer");
 
             builder.Property(x => x.TelegramId)
-                .HasColumnType("integer");
+                .HasColumnType("bigint");
+
+            builder.Property(x => x.TelegramChatId)
+                .HasColumnType("bigint");
 
             builder.HasOne(x => x.Trainer)
                 .WithMany(x => x.Students)

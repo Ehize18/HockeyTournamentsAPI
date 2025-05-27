@@ -9,5 +9,7 @@
 
         public List<TournamentParticipant> Participants { get; set; }
         public List<Tour> Tours { get; set; }
+
+        public bool CanParticipate { get; set; }
     }
 }
